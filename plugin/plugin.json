@@ -1,0 +1,12 @@
+{
+  "name": "paper-todo",
+  "displayName": "Paper Todo",
+  "version": "0.1.0",
+  "description": "Minimalist paper-style to-do list powered by MCP: update tasks naturally from any AI agent session or interact directly on the paper sheet.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Open my Paper Todo list",
+    "Add a high-priority todo: reply to Alex about the auth API before 5pm",
+    "Show me everything currently marked as waiting"
+  ]
+}

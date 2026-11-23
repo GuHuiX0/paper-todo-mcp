@@ -1,0 +1,51 @@
+{
+  "name": "paper-todo-mcp",
+  "version": "0.1.0",
+  "description": "Minimalist paper-style to-do list MCP server with a live local web UI for Gemini CLI and MCP Apps hosts.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "bin": {
+    "paper-todo-mcp": "./dist/server.mjs"
+  },
+  "files": [
+    "dist/",
+    "gemini-extension.json",
+    "GEMINI.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GuHuiX0/paper-todo-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "mcp-app",
+    "gemini-cli",
+    "gemini-cli-extension",
+    "todo",
+    "productivity"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "install-plugin": "node scripts/install-plugin.mjs",
+    "test": "node --no-warnings test/smoke.mjs",
+    "start": "node --no-warnings dist/server.mjs",
+    "ui": "node --no-warnings dist/server.mjs --ui-only"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "latest",
+    "@modelcontextprotocol/sdk": "latest",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "paper-todo": {
+      "command": "node",
+      "args": [
+        "--no-warnings",
+        "${PLUGIN_ROOT}/dist/server.mjs",
+        "--data-dir",
+        "${PLUGIN_DATA}",
+        "--no-web"
+      ]
+    }
+  }
+}

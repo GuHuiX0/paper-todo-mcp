@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <!-- Minimalist paper card with ~12% margin and crisp contrast on light & dark themes -->
+  <rect x="20" y="14" width="88" height="100" rx="10" fill="#FBF8F1" stroke="#3A352F" stroke-width="4.5"/>
+  <!-- Subtle margin rule -->
+  <line x1="38" y1="22" x2="38" y2="106" stroke="#D9B8A6" stroke-width="2" stroke-linecap="round"/>
+  <!-- Ruled paper lines -->
+  <line x1="48" y1="42" x2="92" y2="42" stroke="#3A352F" stroke-width="4" stroke-linecap="round"/>
+  <line x1="48" y1="64" x2="88" y2="64" stroke="#8C8378" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="48" y1="86" x2="80" y2="86" stroke="#B6AEA2" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Vermilion ink checkmark on first item -->
+  <path d="M26 42.5L30.5 47L38.5 36.5" stroke="#B84A39" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Unchecked small ink dots -->
+  <circle cx="31" cy="64" r="3" fill="none" stroke="#6E665C" stroke-width="2.5"/>
+  <circle cx="31" cy="86" r="3" fill="none" stroke="#9C9489" stroke-width="2.5"/>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "name": "paper-todo",
+  "version": "0.1.0",
+  "description": "Minimalist paper-style to-do list MCP server with a live local web UI for Gemini CLI and multi-session AI workflows.",
+  "mcpServers": {
+    "paper-todo": {
+      "command": "node",
+      "args": [
+        "--no-warnings",
+        "${extensionPath}/dist/server.mjs"
+      ],
+      "cwd": "${extensionPath}"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}

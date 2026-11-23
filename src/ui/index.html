@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-paper-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paper Todo</title>
+    <style>
+      /*__STYLES__*/
+    </style>
+  </head>
+  <body>
+    <div id="desk" class="desk">
+      <main class="sheet" aria-label="Paper Todo">
+        <div class="margin-rule" aria-hidden="true"></div>
+
+        <header class="masthead">
+          <div class="masthead-left">
+            <div class="date-stamp" id="date-stamp"></div>
+            <h1 class="sheet-title">Paper Todo</h1>
+          </div>
+          <div class="masthead-right">
+            <span class="sync-indicator" id="sync-indicator" title="Live sync">
+              <span class="sync-dot"></span>
+              <span class="sync-label" id="sync-label">Synced</span>
+            </span>
+            <button
+              type="button"
+              class="icon-btn"
+              id="theme-toggle"
+              title="Toggle light / dark paper"
+              aria-label="Toggle light or dark paper"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <nav class="filter-bar" aria-label="Filter tasks by status">
+          <div class="tabs" id="status-tabs" role="tablist">
+            <button type="button" class="tab is-active" data-tab="active" role="tab">
+              Active <span class="tab-count" data-count="active">0</span>
+            </button>
+            <button type="button" class="tab" data-tab="now" role="tab">
+              Focus <span class="tab-count" data-count="now">0</span>
+            </button>
+            <button type="button" class="tab" data-tab="inbox" role="tab">
+              Inbox <span class="tab-count" data-count="inbox">0</span>
+            </button>
+            <button type="button" class="tab" data-tab="waiting" role="tab">
+              Waiting <span class="tab-count" data-count="waiting">0</span>
+            </button>
+            <button type="button" class="tab" data-tab="done" role="tab">
+              Done <span class="tab-count" data-count="done">0</span>
+            </button>
+          </div>
+          <div class="people-bar" id="people-bar" hidden></div>
+        </nav>
+
+        <form class="composer" id="composer" autocomplete="off">
+          <div class="composer-main">
+            <span class="composer-glyph" aria-hidden="true">+</span>
+            <input
+              id="composer-input"
+              class="composer-input"
+              type="text"
+              placeholder="Write a task… (@person  !urgent  ~waiting  *focus)"
+              aria-label="Add a new task"
+            />
+            <button type="submit" class="composer-submit" id="composer-submit">Add</button>
+          </div>
+          <div class="composer-extras" id="composer-extras" hidden>
+            <label class="mini-field">
+              <span>Status</span>
+              <select id="composer-status">
+                <option value="todo">Todo</option>
+                <option value="now">Focus</option>
+                <option value="waiting">Waiting</option>
+                <option value="inbox">Inbox</option>
+              </select>
+            </label>
+            <label class="mini-field">
+              <span>Person</span>
+              <input id="composer-person" type="text" placeholder="e.g. Alex" />
+            </label>
+            <label class="mini-field">
+              <span>Due</span>
+              <input id="composer-due" type="text" placeholder="e.g. Today 5pm" />
+            </label>
+            <button type="button" class="mini-toggle" id="composer-priority" data-active="false" title="Mark urgent">
+              ! Urgent
+            </button>
+          </div>
+        </form>
+
+        <section class="list-area" id="list-area" aria-live="polite"></section>
+
+        <footer class="sheet-footer" id="sheet-footer">
+          <div class="footer-stats" id="footer-stats"></div>
+          <div class="footer-actions">
+            <button type="button" class="text-btn" id="clear-done-btn" hidden>Clear done</button>
+          </div>
+        </footer>
+
+        <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+      </main>
+    </div>
+
+    <script>
+      /*__SCRIPT__*/
+    </script>
+  </body>
+</html>

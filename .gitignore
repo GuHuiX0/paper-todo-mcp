@@ -1,0 +1,12 @@
+node_modules/
+*.db
+*.db-wal
+*.db-shm
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.*
+
+# Note: dist/server.mjs and dist/app.html are intentionally tracked so
+# `gemini extensions install` runs immediately with zero build step.
