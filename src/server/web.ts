@@ -146,7 +146,7 @@ export class PaperTodoWebServer {
           sendJson(res, 200, {
             ok: true,
             app: 'paper-todo-mcp',
-            version: '0.1.0',
+            version: '0.2.0',
             revision: this.store.getRevision(),
           });
           return;

@@ -191,6 +191,7 @@ namespace PaperTodoDesktop
         {
             if (_bootstrapped) return;
             _bootstrapped = true;
+            NativeInterop.BringWindowToFront(this);
 
             SetSyncStatus(false, false, "Starting…");
             bool ready = await _api.EnsureBackendAsync();
@@ -717,7 +718,7 @@ namespace PaperTodoDesktop
                 _composerStatusBtns.Add(b);
                 statusPills.Children.Add(b);
             }
-            composerStack.Children.Add(statusPills);
+            _composerExtras.Children.Add(statusPills);
 
             WrapPanel fieldsRow = new WrapPanel();
             fieldsRow.Children.Add(BuildComposerInlineField("Person", "e.g. Alex", _draftPerson, 82, out _composerPersonInput));
@@ -763,8 +764,9 @@ namespace PaperTodoDesktop
             };
             fieldsRow.Children.Add(_composerUrgentBtn);
 
-            composerStack.Children.Add(fieldsRow);
+            _composerExtras.Children.Add(fieldsRow);
             RefreshComposerExtrasVisual();
+            composerStack.Children.Add(_composerExtras);
 
             _composerBox.Child = composerStack;
             Grid.SetRow(_composerBox, 2);
