@@ -1,7 +1,7 @@
 {
   "name": "paper-todo-mcp",
-  "version": "0.1.0",
-  "description": "Minimalist paper-style to-do list MCP server with a live local web UI for Gemini CLI and MCP Apps hosts.",
+  "version": "0.2.0",
+  "description": "Minimalist paper-style to-do list MCP server with a native Windows 11 desktop UI and live local web fallback for Gemini CLI and MCP Apps hosts.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -12,6 +12,8 @@
   },
   "files": [
     "dist/",
+    "desktop/",
+    "scripts/build-win-ui.mjs",
     "gemini-extension.json",
     "GEMINI.md",
     "README.md",
@@ -32,10 +34,12 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:desktop": "node scripts/build-win-ui.mjs",
     "typecheck": "tsc --noEmit",
     "install-plugin": "node scripts/install-plugin.mjs",
     "test": "node --no-warnings test/smoke.mjs",
     "start": "node --no-warnings dist/server.mjs",
+    "desktop": "node --no-warnings dist/server.mjs --ui-only",
     "ui": "node --no-warnings dist/server.mjs --ui-only"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 # Paper Todo MCP
 
-The `paper-todo` MCP server manages the user's shared personal to-do list across all terminal and AI agent sessions, backed by a local SQLite (WAL) store and a minimalist paper-style Web UI (`http://127.0.0.1:4789` by default).
+The `paper-todo` MCP server manages the user's shared personal to-do list across all terminal and AI agent sessions, backed by a local SQLite (WAL) store (`~/.paper-todo-mcp/todos.db`) and a native Windows 11 paper-style desktop app (with a local HTTP UI fallback on `http://127.0.0.1:4789`).
 
 ## Usage Guidelines
 
@@ -17,5 +17,5 @@ The `paper-todo` MCP server manages the user's shared personal to-do list across
   - `source`: `teams` or `outlook` when explicitly mentioned, otherwise `agent`.
   - `due`: short human-readable due note (e.g., `Today 5pm`, `Fri`, `2026-11-26`).
 - Before updating, completing, or deleting an item described in natural language (without an explicit `#id`), call `list_todos` first to find the matching item ID instead of guessing or creating duplicates.
-- When the user asks to open or view the Paper Todo interface, call `open_todos` with `openInBrowser: true` so the local paper UI opens in their browser, and include the local UI URL in your reply.
+- When the user asks to open or view the Paper Todo interface, call `open_todos` with `openNativeApp: true`. On Windows, this automatically builds (if needed) and launches or focuses the native Windows Paper Todo app without opening a browser tab; on non-Windows hosts, it opens the local Paper UI in the browser.
 - Keep confirmations concise: state the item `#id` and the exact change made.

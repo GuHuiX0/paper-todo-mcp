@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { listAdapters } from '../adapters/index.js';
 import { TodoStore } from '../storage/store.js';
 import type { TodoBoardSnapshot, TodoItem, TodoPriority, TodoSource, TodoStatus } from '../types.js';
+import { ensureNativeAppBuilt, launchNativeApp } from './desktop.js';
 import { PaperTodoWebServer, openUrlInBrowser } from './web.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -42,6 +43,7 @@ interface CliOptions {
   port: number;
   enableWeb: boolean;
   uiOnly: boolean;
+  apiOnly: boolean;
 }
 
 function parseArgs(argv: string[]): CliOptions {
@@ -53,6 +55,7 @@ function parseArgs(argv: string[]): CliOptions {
   }
   let enableWeb = process.env.PAPER_TODO_NO_WEB !== '1';
   let uiOnly = false;
+  let apiOnly = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -75,10 +78,13 @@ function parseArgs(argv: string[]): CliOptions {
     } else if (arg === '--ui-only') {
       uiOnly = true;
       enableWeb = true;
+    } else if (arg === '--api-only') {
+      apiOnly = true;
+      enableWeb = true;
     }
   }
 
-  return { dataDir, htmlPath, port, enableWeb, uiOnly };
+  return { dataDir, htmlPath, port, enableWeb, uiOnly, apiOnly };
 }
 
 function formatTodoLine(item: TodoItem): string {
@@ -101,14 +107,38 @@ function formatTodoLine(item: TodoItem): string {
   return `${mark} #${item.id} ${item.title}${meta}${notes}`;
 }
 
-function formatBoardText(snapshot: TodoBoardSnapshot, heading = 'Paper Todo', uiUrl?: string | null): string {
+function extractPortFromUrl(url: string | null, fallbackPort: number): number {
+  if (!url) return fallbackPort;
+  try {
+    const parsed = new URL(url);
+    const p = Number(parsed.port);
+    return Number.isFinite(p) && p > 0 ? p : fallbackPort;
+  } catch {
+    return fallbackPort;
+  }
+}
+
+function formatBoardText(
+  snapshot: TodoBoardSnapshot,
+  heading = 'Paper Todo',
+  uiUrl?: string | null,
+  launchedNative?: boolean
+): string {
   const { counts, todos } = snapshot;
   const header = `${heading} · active ${counts.active} (focus ${counts.now}, todo ${counts.todo}, waiting ${counts.waiting}, inbox ${counts.inbox}, done ${counts.done})`;
-  const urlLine = uiUrl ? `\nUI: ${uiUrl}` : '';
-  if (todos.length === 0) {
-    return `${header}${urlLine}\n(empty)`;
+  const lines: string[] = [header];
+  if (launchedNative) {
+    lines.push('Desktop app: launched');
   }
-  return `${header}${urlLine}\n${todos.map(formatTodoLine).join('\n')}`;
+  if (uiUrl) {
+    lines.push(`UI: ${uiUrl}`);
+  }
+  if (todos.length === 0) {
+    lines.push('(empty)');
+  } else {
+    lines.push(todos.map(formatTodoLine).join('\n'));
+  }
+  return lines.join('\n');
 }
 
 function readAppHtml(htmlPath: string): string {
@@ -178,14 +208,46 @@ export async function main(): Promise<void> {
     }
   };
 
+  const serverScriptPath = fileURLToPath(import.meta.url);
+
+  const tryLaunchNative = (uiUrl: string | null): boolean => {
+    if (process.platform !== 'win32') return false;
+    const exePath = ensureNativeAppBuilt(__dirname);
+    if (!exePath) return false;
+    const targetPort = extractPortFromUrl(uiUrl, options.port);
+    return launchNativeApp(exePath, {
+      port: targetPort,
+      dataDir: options.dataDir,
+      serverScript: serverScriptPath,
+    });
+  };
+
+  if (options.apiOnly) {
+    const url = await ensureWebUrl();
+    if (!url) {
+      console.error('[paper-todo-mcp] Failed to start local API server.');
+      process.exit(1);
+    }
+    const shutdown = () => {
+      webServer?.close();
+      store.close();
+      process.exit(0);
+    };
+    process.on('SIGINT', shutdown);
+    process.on('SIGTERM', shutdown);
+    return;
+  }
+
   if (options.uiOnly) {
     const url = await ensureWebUrl();
     if (!url) {
       console.error('[paper-todo-mcp] Failed to start local web UI.');
       process.exit(1);
     }
-    console.log(`Paper Todo UI running at ${url} (db: ${store.dbPath})`);
-    openUrlInBrowser(url);
+    console.log(`Paper Todo backend running at ${url} (db: ${store.dbPath})`);
+    if (!tryLaunchNative(url)) {
+      openUrlInBrowser(url);
+    }
     const shutdown = () => {
       webServer?.close();
       store.close();
@@ -245,30 +307,38 @@ export async function main(): Promise<void> {
     }
   );
 
-  // --- Primary UI Entrypoint Tool (MCP App pane + Localhost Web UI for Gemini CLI) ---
+  // --- Primary UI Entrypoint Tool (MCP App pane + Native Windows App / Localhost Web UI for Gemini CLI) ---
   server.registerTool(
     'open_todos',
     {
       title: 'Paper Todo',
       description:
-        'Open or refresh the interactive Paper Todo sheet. Returns the board snapshot and local Web UI URL. Set openInBrowser=true in terminal clients like Gemini CLI to launch the paper UI in the default browser.',
+        'Open or refresh the interactive Paper Todo sheet. Returns the board snapshot and local UI URL. Set openNativeApp=true (or openInBrowser=true) in terminal clients like Gemini CLI to launch or focus the native Windows Paper Todo app (or open in the browser on non-Windows).',
       inputSchema: {
         status: FilterStatusEnum.optional().describe(
           'Optional initial filter tab: active, inbox, now, todo, waiting, done, or all.'
         ),
         person: z.string().optional().describe('Optional person filter (without leading @).'),
         query: z.string().optional().describe('Optional search query.'),
+        openNativeApp: z
+          .boolean()
+          .optional()
+          .describe('Set true in terminal MCP clients on Windows (such as Gemini CLI) to launch or focus the native Windows Paper Todo desktop app.'),
         openInBrowser: z
           .boolean()
           .optional()
-          .describe('Set true in terminal MCP clients (such as Gemini CLI) to open the local Paper Todo Web UI in the default browser.'),
+          .describe('Fallback flag to open the UI; on Windows this also prefers the native desktop app unless unavailable.'),
       },
       _meta: PANE_META,
     },
     async (args) => {
       const uiUrl = await ensureWebUrl();
-      if (args?.openInBrowser && uiUrl) {
-        openUrlInBrowser(uiUrl);
+      let launchedNative = false;
+      if (args?.openNativeApp || args?.openInBrowser) {
+        launchedNative = tryLaunchNative(uiUrl);
+        if (!launchedNative && uiUrl) {
+          openUrlInBrowser(uiUrl);
+        }
       }
 
       const snapshot = store.getSnapshot({});
@@ -287,12 +357,13 @@ export async function main(): Promise<void> {
         content: [
           {
             type: 'text',
-            text: formatBoardText({ ...snapshot, todos: filteredTodos }, 'Paper Todo', uiUrl),
+            text: formatBoardText({ ...snapshot, todos: filteredTodos }, 'Paper Todo', uiUrl, launchedNative),
           },
         ],
         structuredContent: {
           ...snapshot,
           uiUrl,
+          launchedNative,
           initialFilter,
           adapters: listAdapters(),
         },

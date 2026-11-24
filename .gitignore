@@ -7,6 +7,8 @@ node_modules/
 Thumbs.db
 .env
 .env.*
+dist/PaperTodo.exe
 
 # Note: dist/server.mjs and dist/app.html are intentionally tracked so
-# `gemini extensions install` runs immediately with zero build step.
+# `gemini extensions install` runs immediately with zero npm build step,
+# while PaperTodo.exe is compiled locally in ~1.5s via Windows' built-in csc.exe.

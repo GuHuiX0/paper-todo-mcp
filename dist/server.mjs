@@ -3259,8 +3259,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path3) {
-      let input2 = path3;
+    function removeDotSegments(path4) {
+      let input2 = path4;
       const output2 = [];
       let nextSlash = -1;
       let len = 0;
@@ -3334,11 +3334,11 @@ var require_utils = __commonJS({
       }
       return output2.join("");
     }
-    function removeDotSegmentsRelative(path3) {
-      if (path3 === "" || path3[0] === "/") {
-        return removeDotSegments(path3);
+    function removeDotSegmentsRelative(path4) {
+      if (path4 === "" || path4[0] === "/") {
+        return removeDotSegments(path4);
       }
-      const segments = path3.split("/");
+      const segments = path4.split("/");
       const last = segments.length - 1;
       const output2 = [];
       let trailingDirectory = false;
@@ -3701,8 +3701,8 @@ var require_schemes = __commonJS({
       }
       if (wsComponent.resourceName) {
         const queryIndex = wsComponent.resourceName.indexOf("?");
-        const path3 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
-        wsComponent.path = path3 && path3 !== "/" ? path3 : void 0;
+        const path4 = queryIndex === -1 ? wsComponent.resourceName : wsComponent.resourceName.slice(0, queryIndex);
+        wsComponent.path = path4 && path4 !== "/" ? path4 : void 0;
         wsComponent.query = queryIndex === -1 ? void 0 : wsComponent.resourceName.slice(queryIndex + 1);
         wsComponent.resourceName = void 0;
       }
@@ -7239,12 +7239,12 @@ var require_dist = __commonJS({
         throw new Error(`Unknown format "${name}"`);
       return f;
     };
-    function addFormats(ajv, list, fs3, exportName) {
+    function addFormats(ajv, list, fs4, exportName) {
       var _a3;
       var _b;
       (_a3 = (_b = ajv.opts.code).formats) !== null && _a3 !== void 0 ? _a3 : _b.formats = (0, codegen_1._)`require("ajv-formats/dist/formats").${exportName}`;
       for (const f of list)
-        ajv.addFormat(f, fs3[f]);
+        ajv.addFormat(f, fs4[f]);
     }
     module.exports = exports = formatsPlugin;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -7253,9 +7253,9 @@ var require_dist = __commonJS({
 });
 
 // src/server/index.ts
-import fs2 from "node:fs";
-import os from "node:os";
-import path2 from "node:path";
+import fs3 from "node:fs";
+import os2 from "node:os";
+import path3 from "node:path";
 import { fileURLToPath } from "node:url";
 
 // node_modules/zod/v3/helpers/util.js
@@ -7632,8 +7632,8 @@ function getErrorMap() {
 
 // node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path3, errorMaps, issueData } = params;
-  const fullPath = [...path3, ...issueData.path || []];
+  const { data, path: path4, errorMaps, issueData } = params;
+  const fullPath = [...path4, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -7748,11 +7748,11 @@ var errorUtil;
 
 // node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path3, key) {
+  constructor(parent, value, path4, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path3;
+    this._path = path4;
     this._key = key;
   }
   get path() {
@@ -11708,10 +11708,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema) {
   return mergeDefs(schema._zod.def);
 }
-function getElementAtPath(obj, path3) {
-  if (!path3)
+function getElementAtPath(obj, path4) {
+  if (!path4)
     return obj;
-  return path3.reduce((acc, key) => acc?.[key], obj);
+  return path4.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -12051,11 +12051,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path3, issues) {
+function prefixIssues(path4, issues) {
   return issues.map((iss) => {
     var _a3;
     (_a3 = iss).path ?? (_a3.path = []);
-    iss.path.unshift(path3);
+    iss.path.unshift(path4);
     return iss;
   });
 }
@@ -12517,16 +12517,16 @@ function flattenError(error62, mapper = (issue2) => issue2.message) {
 }
 function formatError(error62, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error63, path3 = []) => {
+  const processError = (error63, path4 = []) => {
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path3, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path4, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path3, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path3, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else {
-        const fullpath = [...path3, ...issue2.path];
+        const fullpath = [...path4, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -12565,17 +12565,17 @@ function formatError(error62, mapper = (issue2) => issue2.message) {
 }
 function treeifyError(error62, mapper = (issue2) => issue2.message) {
   const result = { errors: [] };
-  const processError = (error63, path3 = []) => {
+  const processError = (error63, path4 = []) => {
     var _a3;
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path3, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path4, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path3, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path3, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
       } else {
-        const fullpath = [...path3, ...issue2.path];
+        const fullpath = [...path4, ...issue2.path];
         if (fullpath.length === 0) {
           result.errors.push(mapper(issue2));
           continue;
@@ -12614,8 +12614,8 @@ function treeifyError(error62, mapper = (issue2) => issue2.message) {
 }
 function toDotPath(_path) {
   const segs = [];
-  const path3 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
-  for (const seg of path3) {
+  const path4 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
+  for (const seg of path4) {
     if (typeof seg === "number")
       segs.push(`[${seg}]`);
     else if (typeof seg === "symbol")
@@ -28166,11 +28166,11 @@ function normalizeObjectSchema(schema) {
   }
   return void 0;
 }
-function getDotPath(path3) {
-  if (path3.length === 0) {
+function getDotPath(path4) {
+  if (path4.length === 0) {
     return "object root";
   }
-  return path3.reduce((acc, seg, index) => {
+  return path4.reduce((acc, seg, index) => {
     if (index === 0) {
       return String(seg);
     }
@@ -30397,13 +30397,13 @@ function resolveRef(ref, ctx) {
   if (!ref.startsWith("#")) {
     throw new Error("External $ref is not supported, only local refs (#/...) are allowed");
   }
-  const path3 = ref.slice(1).split("/").filter(Boolean);
-  if (path3.length === 0) {
+  const path4 = ref.slice(1).split("/").filter(Boolean);
+  if (path4.length === 0) {
     return ctx.rootSchema;
   }
   const defsKey = ctx.version === "draft-2020-12" ? "$defs" : "definitions";
-  if (path3[0] === defsKey) {
-    const key = path3[1] === void 0 ? void 0 : decodeJSONPointerSegment(path3[1]);
+  if (path4[0] === defsKey) {
+    const key = path4[1] === void 0 ? void 0 : decodeJSONPointerSegment(path4[1]);
     if (!key || !ctx.defs[key]) {
       throw new Error(`Reference not found: ${ref}`);
     }
@@ -36925,8 +36925,158 @@ var TodoStore = class {
   }
 };
 
+// src/server/desktop.ts
+import { spawn, spawnSync } from "node:child_process";
+import fs2 from "node:fs";
+import os from "node:os";
+import path2 from "node:path";
+function findFrameworkDir() {
+  const windir = process.env.WINDIR || "C:\\Windows";
+  const candidates = [
+    path2.join(windir, "Microsoft.NET", "Framework64", "v4.0.30319"),
+    path2.join(windir, "Microsoft.NET", "Framework", "v4.0.30319")
+  ];
+  for (const dir of candidates) {
+    if (fs2.existsSync(path2.join(dir, "csc.exe"))) {
+      return dir;
+    }
+  }
+  return null;
+}
+function findNativeAppPath(distDir) {
+  const envPath = process.env.PAPER_TODO_APP_PATH;
+  if (envPath && fs2.existsSync(envPath)) {
+    return envPath;
+  }
+  const candidates = [
+    path2.join(distDir, "PaperTodo.exe"),
+    path2.join(os.homedir(), ".paper-todo-mcp", "PaperTodo.exe")
+  ];
+  for (const candidate of candidates) {
+    if (fs2.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+function getLatestSourceMtimeMs(srcDir) {
+  let latest = 0;
+  for (const entry of fs2.readdirSync(srcDir)) {
+    if (entry.endsWith(".cs") || entry.endsWith(".manifest") || entry.endsWith(".ico")) {
+      const stat = fs2.statSync(path2.join(srcDir, entry));
+      if (stat.mtimeMs > latest) {
+        latest = stat.mtimeMs;
+      }
+    }
+  }
+  return latest;
+}
+function compileWithCsc(fwDir, srcDir, outExe) {
+  const csFiles = fs2.readdirSync(srcDir).filter((f) => f.endsWith(".cs")).sort().map((f) => path2.join(srcDir, f));
+  if (csFiles.length === 0) {
+    return false;
+  }
+  const manifestPath = path2.join(srcDir, "app.manifest");
+  const iconPath = path2.join(srcDir, "icon.ico");
+  const refs = [
+    path2.join(fwDir, "WPF", "PresentationCore.dll"),
+    path2.join(fwDir, "WPF", "PresentationFramework.dll"),
+    path2.join(fwDir, "WPF", "WindowsBase.dll"),
+    path2.join(fwDir, "System.Xaml.dll"),
+    path2.join(fwDir, "System.Windows.Forms.dll"),
+    path2.join(fwDir, "System.Drawing.dll"),
+    path2.join(fwDir, "System.Web.Extensions.dll"),
+    path2.join(fwDir, "System.Net.Http.dll")
+  ];
+  fs2.mkdirSync(path2.dirname(outExe), { recursive: true });
+  const args = [
+    "/nologo",
+    "/target:winexe",
+    "/optimize+",
+    "/utf8output",
+    `/out:${outExe}`,
+    ...fs2.existsSync(manifestPath) ? [`/win32manifest:${manifestPath}`] : [],
+    ...fs2.existsSync(iconPath) ? [`/win32icon:${iconPath}`] : [],
+    ...refs.map((r) => `/reference:${r}`),
+    ...csFiles
+  ];
+  const res = spawnSync(path2.join(fwDir, "csc.exe"), args, {
+    encoding: "utf8",
+    windowsHide: true
+  });
+  if (res.status !== 0) {
+    const details = [res.stdout, res.stderr].filter(Boolean).join("\n").trim();
+    console.error(`[paper-todo-mcp] csc.exe failed (${outExe}):
+${details}`);
+    return false;
+  }
+  return fs2.existsSync(outExe);
+}
+function ensureNativeAppBuilt(distDir) {
+  if (process.platform !== "win32") {
+    return null;
+  }
+  const envPath = process.env.PAPER_TODO_APP_PATH;
+  if (envPath && fs2.existsSync(envPath)) {
+    return envPath;
+  }
+  const projectRoot = path2.resolve(distDir, "..");
+  const srcDir = path2.join(projectRoot, "desktop", "win-native");
+  if (!fs2.existsSync(srcDir)) {
+    return findNativeAppPath(distDir);
+  }
+  const latestSourceMtime = getLatestSourceMtimeMs(srcDir);
+  const targets = [
+    path2.join(distDir, "PaperTodo.exe"),
+    path2.join(os.homedir(), ".paper-todo-mcp", "PaperTodo.exe")
+  ];
+  for (const candidate of targets) {
+    if (fs2.existsSync(candidate)) {
+      try {
+        if (fs2.statSync(candidate).mtimeMs >= latestSourceMtime) {
+          return candidate;
+        }
+      } catch {
+      }
+    }
+  }
+  const fwDir = findFrameworkDir();
+  if (!fwDir) {
+    console.error("[paper-todo-mcp] Built-in Windows csc.exe not found; falling back to existing binary or browser.");
+    return findNativeAppPath(distDir);
+  }
+  for (const target of targets) {
+    try {
+      if (compileWithCsc(fwDir, srcDir, target)) {
+        return target;
+      }
+    } catch (err) {
+      console.error(`[paper-todo-mcp] Failed to compile native app to ${target}:`, err);
+    }
+  }
+  return findNativeAppPath(distDir);
+}
+function launchNativeApp(exePath, options) {
+  try {
+    const child = spawn(
+      exePath,
+      ["--port", String(options.port), "--data-dir", options.dataDir, "--server", options.serverScript],
+      {
+        detached: true,
+        stdio: "ignore",
+        windowsHide: false
+      }
+    );
+    child.unref();
+    return true;
+  } catch (err) {
+    console.error("[paper-todo-mcp] Failed to launch native desktop app:", err);
+    return false;
+  }
+}
+
 // src/server/web.ts
-import { spawn } from "node:child_process";
+import { spawn as spawn2 } from "node:child_process";
 import http from "node:http";
 var HOST = "127.0.0.1";
 var MAX_BODY_BYTES = 256 * 1024;
@@ -36998,7 +37148,7 @@ async function probeExistingPaperTodo(port) {
 function openUrlInBrowser(url2) {
   try {
     if (process.platform === "win32") {
-      const child2 = spawn("cmd", ["/c", "start", "", url2], {
+      const child2 = spawn2("cmd", ["/c", "start", "", url2], {
         detached: true,
         stdio: "ignore",
         windowsHide: true
@@ -37007,7 +37157,7 @@ function openUrlInBrowser(url2) {
       return true;
     }
     const cmd = process.platform === "darwin" ? "open" : "xdg-open";
-    const child = spawn(cmd, [url2], { detached: true, stdio: "ignore" });
+    const child = spawn2(cmd, [url2], { detached: true, stdio: "ignore" });
     child.unref();
     return true;
   } catch {
@@ -37192,7 +37342,7 @@ var PaperTodoWebServer = class {
 };
 
 // src/server/index.ts
-var __dirname = path2.dirname(fileURLToPath(import.meta.url));
+var __dirname = path3.dirname(fileURLToPath(import.meta.url));
 var APP_URI = "ui://paper-todo/app.html";
 var APP_MIME_TYPE = "text/html;profile=mcp-app";
 var DEFAULT_PORT = 4789;
@@ -37214,14 +37364,15 @@ var FilterStatusEnum = external_exports.enum(["active", "all", "inbox", "now", "
 var PriorityEnum = external_exports.enum(["normal", "high"]);
 var SourceEnum = external_exports.enum(["manual", "agent", "teams", "outlook"]);
 function parseArgs(argv) {
-  let dataDir = process.env.PAPER_TODO_DATA_DIR || path2.join(os.homedir(), ".paper-todo-mcp");
-  let htmlPath = process.env.PAPER_TODO_HTML || path2.join(__dirname, "app.html");
+  let dataDir = process.env.PAPER_TODO_DATA_DIR || path3.join(os2.homedir(), ".paper-todo-mcp");
+  let htmlPath = process.env.PAPER_TODO_HTML || path3.join(__dirname, "app.html");
   let port = Number(process.env.PAPER_TODO_PORT || DEFAULT_PORT);
   if (!Number.isFinite(port) || port < 0 || port > 65535) {
     port = DEFAULT_PORT;
   }
   let enableWeb = process.env.PAPER_TODO_NO_WEB !== "1";
   let uiOnly = false;
+  let apiOnly = false;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if ((arg === "--data-dir" || arg === "--data_dir") && argv[i + 1]) {
@@ -37243,9 +37394,12 @@ function parseArgs(argv) {
     } else if (arg === "--ui-only") {
       uiOnly = true;
       enableWeb = true;
+    } else if (arg === "--api-only") {
+      apiOnly = true;
+      enableWeb = true;
     }
   }
-  return { dataDir, htmlPath, port, enableWeb, uiOnly };
+  return { dataDir, htmlPath, port, enableWeb, uiOnly, apiOnly };
 }
 function formatTodoLine(item) {
   const mark = item.status === "done" ? "[x]" : item.status === "now" ? "[*]" : item.status === "waiting" ? "[~]" : "[ ]";
@@ -37259,23 +37413,38 @@ function formatTodoLine(item) {
   const notes = item.notes ? ` \u2014 ${item.notes}` : "";
   return `${mark} #${item.id} ${item.title}${meta3}${notes}`;
 }
-function formatBoardText(snapshot, heading = "Paper Todo", uiUrl) {
+function extractPortFromUrl(url2, fallbackPort) {
+  if (!url2) return fallbackPort;
+  try {
+    const parsed = new URL(url2);
+    const p = Number(parsed.port);
+    return Number.isFinite(p) && p > 0 ? p : fallbackPort;
+  } catch {
+    return fallbackPort;
+  }
+}
+function formatBoardText(snapshot, heading = "Paper Todo", uiUrl, launchedNative) {
   const { counts, todos } = snapshot;
   const header = `${heading} \xB7 active ${counts.active} (focus ${counts.now}, todo ${counts.todo}, waiting ${counts.waiting}, inbox ${counts.inbox}, done ${counts.done})`;
-  const urlLine = uiUrl ? `
-UI: ${uiUrl}` : "";
-  if (todos.length === 0) {
-    return `${header}${urlLine}
-(empty)`;
+  const lines = [header];
+  if (launchedNative) {
+    lines.push("Desktop app: launched");
   }
-  return `${header}${urlLine}
-${todos.map(formatTodoLine).join("\n")}`;
+  if (uiUrl) {
+    lines.push(`UI: ${uiUrl}`);
+  }
+  if (todos.length === 0) {
+    lines.push("(empty)");
+  } else {
+    lines.push(todos.map(formatTodoLine).join("\n"));
+  }
+  return lines.join("\n");
 }
 function readAppHtml(htmlPath) {
-  if (!fs2.existsSync(htmlPath)) {
+  if (!fs3.existsSync(htmlPath)) {
     throw new Error(`Paper Todo UI bundle not found at ${htmlPath}. Run "npm run build" first.`);
   }
-  return fs2.readFileSync(htmlPath, "utf8");
+  return fs3.readFileSync(htmlPath, "utf8");
 }
 function seedDemoItems(store) {
   if (store.getCounts().total > 0) return;
@@ -37332,14 +37501,43 @@ async function main() {
       return null;
     }
   };
+  const serverScriptPath = fileURLToPath(import.meta.url);
+  const tryLaunchNative = (uiUrl) => {
+    if (process.platform !== "win32") return false;
+    const exePath = ensureNativeAppBuilt(__dirname);
+    if (!exePath) return false;
+    const targetPort = extractPortFromUrl(uiUrl, options.port);
+    return launchNativeApp(exePath, {
+      port: targetPort,
+      dataDir: options.dataDir,
+      serverScript: serverScriptPath
+    });
+  };
+  if (options.apiOnly) {
+    const url2 = await ensureWebUrl();
+    if (!url2) {
+      console.error("[paper-todo-mcp] Failed to start local API server.");
+      process.exit(1);
+    }
+    const shutdown2 = () => {
+      webServer?.close();
+      store.close();
+      process.exit(0);
+    };
+    process.on("SIGINT", shutdown2);
+    process.on("SIGTERM", shutdown2);
+    return;
+  }
   if (options.uiOnly) {
     const url2 = await ensureWebUrl();
     if (!url2) {
       console.error("[paper-todo-mcp] Failed to start local web UI.");
       process.exit(1);
     }
-    console.log(`Paper Todo UI running at ${url2} (db: ${store.dbPath})`);
-    openUrlInBrowser(url2);
+    console.log(`Paper Todo backend running at ${url2} (db: ${store.dbPath})`);
+    if (!tryLaunchNative(url2)) {
+      openUrlInBrowser(url2);
+    }
     const shutdown2 = () => {
       webServer?.close();
       store.close();
@@ -37397,21 +37595,26 @@ async function main() {
     "open_todos",
     {
       title: "Paper Todo",
-      description: "Open or refresh the interactive Paper Todo sheet. Returns the board snapshot and local Web UI URL. Set openInBrowser=true in terminal clients like Gemini CLI to launch the paper UI in the default browser.",
+      description: "Open or refresh the interactive Paper Todo sheet. Returns the board snapshot and local UI URL. Set openNativeApp=true (or openInBrowser=true) in terminal clients like Gemini CLI to launch or focus the native Windows Paper Todo app (or open in the browser on non-Windows).",
       inputSchema: {
         status: FilterStatusEnum.optional().describe(
           "Optional initial filter tab: active, inbox, now, todo, waiting, done, or all."
         ),
         person: external_exports.string().optional().describe("Optional person filter (without leading @)."),
         query: external_exports.string().optional().describe("Optional search query."),
-        openInBrowser: external_exports.boolean().optional().describe("Set true in terminal MCP clients (such as Gemini CLI) to open the local Paper Todo Web UI in the default browser.")
+        openNativeApp: external_exports.boolean().optional().describe("Set true in terminal MCP clients on Windows (such as Gemini CLI) to launch or focus the native Windows Paper Todo desktop app."),
+        openInBrowser: external_exports.boolean().optional().describe("Fallback flag to open the UI; on Windows this also prefers the native desktop app unless unavailable.")
       },
       _meta: PANE_META
     },
     async (args) => {
       const uiUrl = await ensureWebUrl();
-      if (args?.openInBrowser && uiUrl) {
-        openUrlInBrowser(uiUrl);
+      let launchedNative = false;
+      if (args?.openNativeApp || args?.openInBrowser) {
+        launchedNative = tryLaunchNative(uiUrl);
+        if (!launchedNative && uiUrl) {
+          openUrlInBrowser(uiUrl);
+        }
       }
       const snapshot = store.getSnapshot({});
       const initialFilter = {
@@ -37428,12 +37631,13 @@ async function main() {
         content: [
           {
             type: "text",
-            text: formatBoardText({ ...snapshot, todos: filteredTodos }, "Paper Todo", uiUrl)
+            text: formatBoardText({ ...snapshot, todos: filteredTodos }, "Paper Todo", uiUrl, launchedNative)
           }
         ],
         structuredContent: {
           ...snapshot,
           uiUrl,
+          launchedNative,
           initialFilter,
           adapters: listAdapters()
         }

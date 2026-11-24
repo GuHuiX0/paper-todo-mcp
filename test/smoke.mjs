@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -11,6 +12,7 @@ const root = path.resolve(__dirname, '..');
 const serverPath = path.join(root, 'dist', 'server.mjs');
 const tempDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'paper-todo-test-'));
 const testPort = 14789;
+const apiOnlyPort = 14790;
 
 async function connectClient(extraArgs = []) {
   const transport = new StdioClientTransport({
@@ -116,7 +118,47 @@ try {
   assert.equal(afterRestart.structuredContent.counts.waiting, 1);
   await restarted.close();
 
+  // 9. Verify --api-only mode used when PaperTodo.exe boots standalone
+  const apiChild = spawn(
+    'node',
+    ['--no-warnings', serverPath, '--api-only', '--port', String(apiOnlyPort), '--data-dir', tempDataDir],
+    { stdio: 'ignore', windowsHide: true }
+  );
+  try {
+    let apiHealthy = false;
+    for (let i = 0; i < 30; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+      try {
+        const res = await fetch(`http://127.0.0.1:${apiOnlyPort}/api/health`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ok === true && data.app === 'paper-todo-mcp') {
+            apiHealthy = true;
+            break;
+          }
+        }
+      } catch {
+        // Retry until ready
+      }
+    }
+    assert.ok(apiHealthy, '--api-only server must respond cleanly on /api/health');
+
+    const apiBoard = await (await fetch(`http://127.0.0.1:${apiOnlyPort}/api/board`)).json();
+    assert.equal(apiBoard.counts.total, 2);
+  } finally {
+    const exited = new Promise((resolve) => {
+      if (apiChild.exitCode !== null || apiChild.signalCode !== null) {
+        resolve();
+        return;
+      }
+      apiChild.once('exit', () => resolve());
+      setTimeout(resolve, 1500);
+    });
+    apiChild.kill();
+    await exited;
+  }
+
   console.log('ALL MCP + MULTI-SESSION HTTP SMOKE TESTS PASSED!');
 } finally {
-  fs.rmSync(tempDataDir, { recursive: true, force: true });
+  fs.rmSync(tempDataDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }
